@@ -38,10 +38,3 @@ optional arguments:
   --query [QUERY]  json query
   --log [LOG]      log file path
 ```
-
-## TODO
-
-* 支持指定数据库的同步
-* 提高容错性，同步过程遇到服务或网络中断，自动重连
-* 对于集合内有唯一索引的情况，自动解决DuplicateKey问题
-* 支持自定义oplog同步实现
