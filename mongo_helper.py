@@ -9,7 +9,9 @@ def mongo_connect(host, port, **kwargs):
     w = kwargs.get('w', 1) # default w = 1
     replset_name = get_replset_name(host, port)
     if replset_name:
-        return pymongo.MongoReplicaSetClient('%s:%d' % (host, port),
+        return pymongo.MongoClient(
+                host=host,
+                port=port,
                 replicaSet=replset_name,
                 read_preference=pymongo.read_preferences.ReadPreference.PRIMARY,
                 w=w)

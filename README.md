@@ -1,23 +1,24 @@
-# Python Mongo Sync
+# python-mongo-sync
 
-A MongoDB sync tool that can sync data from a replica-set to other mongos/mongod/replica set. It suppport a oplog-based realtime data sync.  
-The soucre must be a member of a replica set and the destination can be a mongos/mongod/replica-set-member.
-
-MongoDB从源端到目标端的数据同步工具，同步过程包括全量数据导入和基于oplog的实时数据同步。  
-源端是复制集成员，暂不支持Master/Slave；目标端是mongos/mongod/复制集成员。
+A MongoDB sync tool can sync data from a replica-set to another mongod/replica-set/sharded cluster.
+Oplog replays in sequence in a single thread, so it works a bit slowly when write-concern is endabled.
+If write operation of source is frequently, maybe you are interested in [**go-mongo-sync**](https://github.com/caosiyang/go-mongo-sync) that supports concurrent oplog replay.
 
 
 ## Feature
 
-* 支持实时同步
-* 支持全量数据或指定集合的同步（TODO指定数据库）
-* 如果指定集合，允许按照query条件同步
-* 全量同步过程根据实际情况选择批量写入或采用多进程并发写，提高同步效率
+- real-time sync
+- sync all data
+- sync data of the specified database
+- sync data of the specified collection with a optional query
+- sync from the specified timestamp
+- support MongoDB v3.0
 
 
 ## Requirement
 
-* 源端必须是复制集成员
+- source is a replica-set (NOT SUPPORT master/slave)
+- PyMongo 3.0.1 or later
 
 
 ## Usage 
@@ -25,16 +26,22 @@ MongoDB从源端到目标端的数据同步工具，同步过程包括全量数�
 ```bash
 # python main.py -h
 usage: main.py [-h] --from [FROM] --to [TO] [--db [DB]] [--coll [COLL]]
-               [--query [QUERY]] [--log [LOG]]
+               [--query [QUERY]] [--start-optime [START_OPTIME]]
+               [--write-concern [WRITE_CONCERN]] [--log [LOG]]
 
-Sync data from a replica-set to another mongos/mongod instance.
+Sync data from a replica-set to another mongod/replica-set/sharded-cluster.
 
 optional arguments:
-  -h, --help       show this help message and exit
-  --from [FROM]    the source must be a mongod instance of replica-set
-  --to [TO]        the destionation should be a mongos or mongod instance
-  --db [DB]        the database to sync
-  --coll [COLL]    the collection to sync
-  --query [QUERY]  json query
-  --log [LOG]      log file path
+  -h, --help            show this help message and exit
+  --from [FROM]         the source must be a mongod instance of replica-set
+  --to [TO]             the destionation should be a mongos or mongod instance
+  --db [DB]             the database to sync
+  --coll [COLL]         the collection to sync
+  --query [QUERY]       query, JSON format
+  --start-optime [START_OPTIME]
+                        start optime
+  --write-concern [WRITE_CONCERN]
+                        write concern, default = 1
+  --log [LOG]           log file path
+
 ```
